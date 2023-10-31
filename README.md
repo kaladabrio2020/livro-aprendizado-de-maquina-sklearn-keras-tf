@@ -1,2 +1,2 @@
-# AprendendoLivroMaosaObra-SkleanKerasTensorFLow
+# Aplicações 
 Lendo e Aplicando com base no livro Mãos à Obra: Aprendizado de Máquina com Sklearn.......
