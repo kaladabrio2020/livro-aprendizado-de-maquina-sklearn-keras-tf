@@ -152,3 +152,5 @@ Vai utilizar geralmente tando o aprendizado de maquina supervisionado e não sup
 * Os pipelines são uma parte fundamental do fluxo de trabalho em projetos de análise de dados e aprendizado de máquina, pois permitem automatizar e organizar tarefas complexas de maneira eficiente
 
 &nbsp;
+
+## Capítulo 3 : Classificadores
