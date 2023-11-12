@@ -148,6 +148,8 @@
   },
   "active": "e5e275fff441458b",
   "lastOpenFiles": [
+    "Parte 1 - Conceitos basicos de Aprendizado de Maquina/Capitulo 5 - SVM/svm.ipynb",
+    "Parte 1 - Conceitos basicos de Aprendizado de Maquina/Capitulo 5 - SVM",
     "Parte 1 - Conceitos basicos de Aprendizado de Maquina/Capitulo 4 - Treinando Modelos/Resumo Treinando Modelos.md",
     "Parte 1 - Conceitos basicos de Aprendizado de Maquina/Capitulo 4 - Treinando Modelos/housing.csv",
     "Resumo.md",
@@ -161,7 +163,6 @@
     "venv/lib/python3.11/site-packages/gurobipy-10.0.3.dist-info/INSTALLER",
     "venv/lib/python3.11/site-packages/gurobipy/__pycache__/__init__.cpython-311.pyc",
     "venv/lib/python3.11/site-packages/gurobipy/__pycache__",
-    "venv/lib/python3.11/site-packages/gurobipy-10.0.3.dist-info/top_level.txt",
-    "venv/lib/python3.11/site-packages/gurobipy-10.0.3.dist-info/WHEEL"
+    "venv/lib/python3.11/site-packages/gurobipy-10.0.3.dist-info/top_level.txt"
   ]
 }
