@@ -1,5 +1,5 @@
 <div align="center" >
-    <img src="/img/Capa.png" style="width:100px">
+    <img src="/img/Capa.png" style="width:400px">
 </div>
 
 
