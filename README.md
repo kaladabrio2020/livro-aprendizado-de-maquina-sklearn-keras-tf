@@ -1,4 +1,4 @@
-<div align="center">
+<div align="center" height=300>
     <img src="/img/Capa.jpg">
 </div>
 
