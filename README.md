@@ -6,7 +6,7 @@
 # Mãos à Obra: Aprendizado de Máquina com Sklearn,Keras & Tensorflow 2&#170; edição 
 
 ## Objetivo 
-Ler o livro todo e colocar todas as coisa que eu aprendi com base no livro 
+Ler o livro todo e colocar todas as coisa que eu aprendi 
 
 
 ## Sumário 
