@@ -1,4 +1,4 @@
-# Capítulo 1 : Cenário do Aprendizado de Máquina
+# Capítulo 1 - Cenário do Aprendizado de Máquina
 
 Primeiro Algoritmo de Aprendizado de Máquina que se popularizou na década de 1999 , o foi *filtro de Spam* 
 
@@ -127,11 +127,60 @@ Significa que o modelo funciona bem nos dados de treinamento , mas não generali
   2. Coletar mais dados de treinamento
   
   3. Reduzir o Ruído nos dados de treinamento(remover outliers e corrigir error de outliers)
-  
-  
-
-
 
 &nbsp;
+
+&nbsp;
+
+-------------------
+
+# Capítulo 2 - Projeto de Aprendizado de Máquina Ponta a Ponta
+
+## 2.1 - Checklist do Projeto :
+
+1. Abordar o problema e analisar o panorama em geral
+
+2. Obter os dados
+
+3. Explorar os dados 
+
+4. Preparar os dados para expor melhor os padrões de dados subjacentes aos algoritmos de aprendizado de máquina
+
+5. Explorar muitos modelos diferentes e os combinar com a melhor solução
+
+6. Apresentar sua solução
+
+7. Implementar , monitoriar e fazer manutenção
+
+## 2.2 - Pipeline :
+
+A seguencia de compenentes de processamentos de dados se chama pipeline de dados. 
+
+## 2.3 - Medida de desempenho :
+
+* **Erro quadrático médio :** Calcula a média dos quadrados das diferenças entre as previsões e os valores reais.
+  
+  * $\large RMSE(X,h) = \sqrt{\frac{1}{m} \sum^{m}_{i=1}{(h(x^{(i)}) - y^{(i)})}} $
+    
+    * **Pros**
+      * Penaliza erros grandes mais fortemente 
+      * Penaliza valores distante da média
+    * **Contras**
+      * Menos intuitivo, os valores estão ao quadrado, o que pode torná-lo mais sensível a outliers extremos.
+
+* **Erro Absoluto médio :** Calcula a média das diferenças absolutas entre as previsões e os valores reais.
+  
+  * $\large MAE(X,h) = \frac{1}{m} \cdot \sum^{m}_{i=1} | (h(x^{(i)}) - y^{(i)})|$
+    
+    * **Pros**
+      * Fácil interpretação, trata todos os erros de forma igual.
+    * **Contras** 
+      * Não tem penalidade 
+
+* **R2** : . Quanto mais próximo o R2 estiver de 1, melhor o modelo está em explicar a variabilidade nos dados. Se R2 for próximo de 0, o modelo não está explicando bem a variabilidade nos dados.
+  
+  * $\large R2(pred,ytrue) = 1-\frac{\sum^{m}_{i=1}({ytrue^{i} - pred^{i})^{2}}}{ {\sum^{m}_{i=1}} ({ytrue^{i} - ytrue_{mean})^{2}} }$
+
+
 
 

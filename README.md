@@ -1,9 +1,8 @@
-<div align="center" >
-    <img src="/img/Capa.png" style="width:400px">
+<div align="center" height=300px>
+    <img src="/img/Capa.jpg">
 </div>
 
-
-# Mãos à Obra: Aprendizado de Máquina com Sklearn,Keras & Tensorflow 2&#170; edição 
+# Mãos à Obra: Aprendizado de Máquina com Sklearn,Keras & Tensorflow 2&#170 edição
 
 ## Objetivo 
 Ler o livro todo e colocar todas as coisa que eu aprendi 
