@@ -64,6 +64,8 @@ O conjunto de treinamento que você fornece ao algoritmo inclui as soluções de
   
   * Prever valor numéricos alvo [**target**], dado um conjunto de caracteristicas [**features**]
 
+> São informações em um conjunto de dados que têm rótulos ou categorias associadas a eles. Cada instância ou amostra de dados em um conjunto rotulado é acompanhada por uma etiqueta ou categoria que descreve ou classifica essa amostra.
+
 ### Aprendizado Não Supervisionado
 
 Os dados da treinamento não são rotulados,os sistema tenta aprender sem um professor
@@ -85,6 +87,8 @@ Os dados da treinamento não são rotulados,os sistema tenta aprender sem um pro
   * É descobrir relações interessante entre atributos
   
   * Este tipo de aprendizado visa encontrar padrões que indicam relações entre variáveis no conjunto de dados.
+
+> São conjuntos de informações em que as amostras não possuem categorias, etiquetas ou rótulos associados a elas. Esses dados consistem em observações brutas ou não classificadas, não sendo explicitamente categorizados ou identificados.
 
 ### Aprendizado semissupervisionado
 
@@ -181,6 +185,39 @@ A seguencia de compenentes de processamentos de dados se chama pipeline de dados
   
   * $\large R2(pred,ytrue) = 1-\frac{\sum^{m}_{i=1}({ytrue^{i} - pred^{i})^{2}}}{ {\sum^{m}_{i=1}} ({ytrue^{i} - ytrue_{mean})^{2}} }$
 
+## 2.3 - Tipos de atributos
 
+<img title="" src="img/Atributos.png" alt="" width="464" data-align="center">
 
+- **Atributo categórico binário**: é aquele que assumi apenas dois valores, e podem ser *também númericos*
+  
+  - ex : atributo "gender"" possui dois valores únicos = ['female' , ' male'].
 
+- **Atributo categórico Nominal** : é aquele cujos valores possuem símbolos ou rótulos distintos.
+  
+  - Por exemplo: o atributo “estado civil” pode assumir os valores [“solteiro”,“casado”, “separado”, “divorciado”,“viúvo”].
+
+- **Atributo categórico ordinal :** é aquele que permite ordenar suas categorias, embora não necessariamente haja uma noção explicita de distância entre as categorias
+  
+  - Por exemplo: o atributo “nível educacional” pode assumir
+    os valores [“primário”, “secundário”, “graduação”,“especialização”,“mes trado”,“doutorado”]
+
+- **Atributo numérico de razão(Intervalar)** : Elas têm os mesmos atributos das variáveis contínuas, mas possuem uma escala definida, onde as diferenças entre os valores são interpretáveis e significativas.
+
+- **Atributo Numérico Discreto :** Elas assumem valores específicos e separados, e não podem ter valores intermediários entre esses valores.(geralmente são inteiros)
+  
+  - Número de filhos em uma família (1, 2, 3...)
+
+## 2.3 - Tail Heavy:
+
+Na analise dados , com histograma podemos vizualizar que certo atributos podem ter uma tail-heavy, as vezes se faz necessario passar para um distribuiçao normal
+
+* Logaritmica
+
+* Raiz Quadrada
+
+* Box-cox
+  
+  * ```python
+    from scipy.stats import boxcox
+    ```
