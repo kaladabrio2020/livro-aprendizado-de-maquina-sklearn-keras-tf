@@ -221,3 +221,176 @@ Na analise dados , com histograma podemos vizualizar que certo atributos podem t
   * ```python
     from scipy.stats import boxcox
     ```
+
+## 2.4 - Conjunto de test
+
+#### Amostragem estratificada
+
+* Supondo que Eua e formado por 51% de mulheres e 49% de homens , uma pesquisa e feita e mantem essa proporção na amostragem, **amostragem estratificada** a população e dividida em subgrupos homogeneos, chamados de estratos, e recolhe-se a amostra do numero certo de instancia de cada estrato, afim de garantir que o conjunto de test represente população como um todo.
+
+## 2.5 - Prepare os dados para o algoritmos de Machine Learning
+
+Em vez de preparar tudo manualmente , voce dever escrever funções 
+
+1. Reutilizavel
+
+&nbsp;
+
+&nbsp;
+
+---------------------------
+
+# Capítulo 4 - Treinando Modelos
+
+## Regressão Linear
+
+Modelo linear faz   um predição simplesmente calculando uma soma ponderada das caracteristicas de entrada
+
+* $\large ŷ$ :valor previsto
+
+* $\large n$ :número das caractiricas
+
+* $X_i$ : é o valor da i-ésima caracterítica
+
+* $\theta_j$ : é o j-ésimo parametro do modelo 
+  
+  * $\theta_0$ = interceptor
+  
+  * $\theta_{i>0}$ = peso das caracterisitcas
+
+#### Predição do modelo linear
+
+$\large ŷ = h(x) = \theta \cdot x$
+
+#### Equação Normal
+
+$\large \^{\theta} = (X^T X)^{-1} X^T y$
+
+$\large \^{\theta}$ : é o valor de $\theta$ que minimiza a função de custo
+
+```python
+class RegressaoLinear():
+
+    def fit(self,X:np.array,y:np.array):
+        X     = np.c_[np.ones((np.size(X),1)),X]
+
+        theta = (np.linalg.inv(X.T.dot(X)).dot(X.T)).dot(y)
+
+        self.theta = theta
+
+    def predict(self,X):
+        X = np.c_[np.ones((np.size(X))),X]
+        return X.dot(self.theta)
+```
+
+##### Prevendo
+
+```python
+X = 2 * np.random.rand(100,1)
+y = 4*X +np.random.randn(100,1)
+
+xtest = np.array([[0],[2]])
+
+reg  = RegressaoLinear()
+reg.fit(X,y)
+pred = reg.predict(xtest)
+```
+
+#### Complexidade computacional
+
+* Equação normal : $O(n^3)$
+
+* No sklearn a abordagem Decomposição em valores singulares(**SVD**) é de : $O(n²)$
+
+> Se tiver o dobro de instancia levarar o dobro de caracteristicas, mas lida bem com grande númedo de instancias
+
+### Gradiente descendente
+
+É um algoritmo de otimização genérico que consegue identificar ótimas soluções para um leque amplo de problemas.
+
+* $min : f(x)$ O objetivo  e  minimizar a função de custo , a função para um modelo linear e convexa ou seja só tem um minimo global.
+
+* Calcula o gradiente local da função de error em relação ao vetor de parametro $\theta$ $\nabla f(x)$ e segue em direção ao gradiente descendente
+
+* $\theta$ e inicializado com valores aleatorios
+
+Um parametro importante para o gradiente descendente é o tamanho as etapas , determinado pelo hiperparameto taxa de aprendizado $eta$ 
+
+* Se for muito pequeno o algoritmo terá mais iterações para convergir , levando assim muito tempo
+
+* Se for muito alto o algoritmo talvez nunca encontre uma boa solução
+
+> E bom as caracteristicas estarem e uma escala semelhante 
+> 
+> * Normalizacao =**`MinMaxScaler`**
+> 
+> * Padronização = **`StandardScaler`**
+
+* **OBS** : Quanto mais parametro um modelo tem (caracteristicas) mais dimensões esse espaço tem e fica mais dificil a pesquisa
+
+### Gradiente decendente em bach (em lote)
+
+Para calcular o gradiente da função de custo em relação ao parametro do modelo $\theta$ 
+
+#### Derivada parciais da função de custo
+
+$$
+\nabla MSE(\theta) = \frac{2}{m} \cdot \sum^{m}_{i=1}(\theta^{T} x^i - y^i)x^i_j
+$$
+
+#### Vetor gradiente da função de custo
+
+$$
+\nabla_{\theta} MSE(\theta) = \frac{2}{m} \cdot X^T (X\cdot\theta - y)
+$$
+
+* A formula envolve cálculos sobre o conjunto de treinamento completo $\large X$ a cada etapa do gradiente descendente.
+
+* Por isso se chama gradiente descendente em lote possui usa todos dos dados de treimanento a cada etapa
+
+* **Gradiente descendente em lote** e  mutio lento se o conjunto de treinamento for muito grande , contudo ele se sai muito melhor em relação a regressão linear normal ou SVD
+
+#### Etapa do gradiente Descente
+
+$$
+\theta_{iter} = \theta - \eta \cdot \nabla MSE(\theta)
+$$
+
+```python
+class GradienteLote:
+    def __init__(self,theta = np.random.randn(2,1), eta = 0.1 , maxiter = 1_000):
+        self.theta   = theta
+        self.eta     = eta 
+        self.maxiter = maxiter
+
+
+    def condition(self,vetor):
+        if ( np.any(np.isinf(vetor))   ):return True 
+        if ( np.any(np.isnan(vetor))   ):return True
+        if ( np.any(np.isneginf(vetor))):return True
+        return False
+    
+    def fit(self,X:np.array,y=None):
+        m =  np.size(X)
+        X =  np.c_[np.ones((m,1)),X]
+
+        for iter in range(self.maxiter):
+            vetorGradiente = X.T.dot(X.dot(self.theta) - y)
+            vetorGradiente = 1/m * vetorGradiente
+            
+            if self.condition(vetorGradiente):
+                break
+            
+            self.theta = self.theta - self.eta * vetorGradiente
+
+            if self.condition(self.theta):
+                break
+        return self.theta
+    def predict(self,X):
+        X = np.c_[np.ones(np.size(X)),X]
+        return X.dot(self.theta)
+```
+
+* Encontrar um boa taxa de aprendizado usano o **`GridSearch`** mas deve limitar o número de iterações
+
+### Gradiente Descendente Estocástico
