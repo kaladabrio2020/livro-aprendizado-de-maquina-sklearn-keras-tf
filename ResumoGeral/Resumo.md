@@ -244,29 +244,39 @@ Em vez de preparar tudo manualmente , voce dever escrever funções
 
 ## Regressão Linear
 
+<img title="" src="img/plot.png" alt="" width="371" data-align="center">
+
 Modelo linear faz   um predição simplesmente calculando uma soma ponderada das caracteristicas de entrada
 
-* $\large ŷ$ :valor previsto
+* $\large ŷ$...: Valor previsto
 
-* $\large n$ :número das caractiricas
+* $\large n$...: Número das caractiricas
 
-* $X_i$ : é o valor da i-ésima caracterítica
+* $X_i$.: É o valor da i-ésima das caracteríticas
 
-* $\theta_j$ : é o j-ésimo parametro do modelo 
+* $\theta_j$..: É o j-ésimo parametro do modelo
   
-  * $\theta_0$ = interceptor
+  * $\theta_0$ = **interceptor** (intercept_)
   
-  * $\theta_{i>0}$ = peso das caracterisitcas
+  * $\theta_{i>0}$ = peso das caracterisitcas (**coeficiente(coef_)**)
 
-#### Predição do modelo linear
+$$
+\large \^{y} = \theta_0(x_0) + \theta_1x_1 + .... + \theta_nx_n \\x_0 = 1 
+$$
 
-$\large ŷ = h(x) = \theta \cdot x$
+#### Predição do modelo linear(vetorizada)
+
+$$
+\large ŷ = h(x) = \theta \cdot x
+$$
 
 #### Equação Normal
 
-$\large \^{\theta} = (X^T X)^{-1} X^T y$
+$$
+\large \^{\theta} = (X^T X)^{-1} X^T y
+$$
 
-$\large \^{\theta}$ : é o valor de $\theta$ que minimiza a função de custo
+$\large \^{\theta}$...: é o valor de $\theta$ que minimiza a função de custo.
 
 ```python
 class RegressaoLinear():
@@ -298,9 +308,11 @@ pred = reg.predict(xtest)
 
 #### Complexidade computacional
 
-* Equação normal : $O(n^3)$
+* Se aumenta o número de caracteristicas $X_{n*m}$ fica complexidade de $O(n^{2.4})$  a $O(n^3)$
 
-* No sklearn a abordagem Decomposição em valores singulares(**SVD**) é de : $O(n²)$
+* No Sklearn **`RegressionLinear`** é $O(n^2)$ em relação ao numero de caracteristicas
+
+* Se ambas lidam bem com um grande número de instancias $O(m)$
 
 > Se tiver o dobro de instancia levarar o dobro de caracteristicas, mas lida bem com grande númedo de instancias
 
@@ -369,7 +381,7 @@ class GradienteLote:
         if ( np.any(np.isnan(vetor))   ):return True
         if ( np.any(np.isneginf(vetor))):return True
         return False
-    
+
     def fit(self,X:np.array,y=None):
         m =  np.size(X)
         X =  np.c_[np.ones((m,1)),X]
@@ -377,10 +389,10 @@ class GradienteLote:
         for iter in range(self.maxiter):
             vetorGradiente = X.T.dot(X.dot(self.theta) - y)
             vetorGradiente = 1/m * vetorGradiente
-            
+
             if self.condition(vetorGradiente):
                 break
-            
+
             self.theta = self.theta - self.eta * vetorGradiente
 
             if self.condition(self.theta):
@@ -394,3 +406,127 @@ class GradienteLote:
 * Encontrar um boa taxa de aprendizado usano o **`GridSearch`** mas deve limitar o número de iterações
 
 ### Gradiente Descendente Estocástico
+
+Totalmente diferente do gradiente descendente em lote que usa todo o conjunto de treinamento para calcular o gradiente a cada etapa(deixando lento para conjunto de treinamento grandes) , estocástico seleciona no conjunto de treinamentos pequenas instancias de forma aleatória a cada etapa.
+
+* Bem poucos dados para manipular a cada manipulação
+
+* Pega instancias unicas de maneira aleatoria para calcular o gradiente
+
+* Devido a natureza aleatoria o algoritmo e muito menos regular que o gradiente descendente em lote , ou seja , tem mais etapas até alcançãr o minimo .
+
+* Tem mais chances de encontrar o minimo global
+
+```python
+class GradientStocastic:
+    def __init__(self,t0 = 5, t1 = 50, n_epochs=50 ,theta = np.random.randn(2,1)):
+        self.t0 = t0
+        self.t1 = t1
+        self.n_epochs = n_epochs
+        self.theta    = theta
+
+    def condition(self,vetor):
+        if ( np.any(np.isinf(vetor))   ):return True 
+        if ( np.any(np.isnan(vetor))   ):return True
+        if ( np.any(np.isneginf(vetor))):return True
+        return False
+
+    def learning_rate(self,t):
+        return self.t0 / (t+self.t1)
+
+    def fit(self,X,y=None):
+        m = np.size(X)
+        X = np.c_[np.ones((m,1)),X]
+
+        for epoch in range(self.n_epochs):
+            for i in range(m):
+                randomIndex = np.random.randint(m)
+                xi = X[randomIndex:randomIndex+1]
+                yi = y[randomIndex:randomIndex+1]
+
+                gradient = 2 * xi.T.dot(xi.dot(self.theta)-yi)
+
+                if (self.condition(gradient)):break
+
+                eta        = self.learning_rate(epoch*m+i)
+                self.theta = self.theta - eta * gradient
+
+                if (self.condition(self.theta)):break
+
+        return self.theta
+    def predict(self,X):
+        X = np.c_[np.ones(np.size(X)),X]
+        return X.dot(self.theta)
+```
+
+#### Comparando
+
+| x              | Instancias | Caracteristica | Hiperparametro | Escalonamento Exigido | Sklearn                | out-of-core |
+| -------------- | ---------- | -------------- | -------------- | --------------------- | ---------------------- | ----------- |
+| Equação Normal | Rápido     | Lento          | 0              | Não                   | N/A                    | não         |
+| Svd            | Rápido     | Lento          | 0              | Não                   | **`LinearRegression`** | não         |
+| GD Batch       | Lento      | Rápido         | 2              | sim                   | **`SGBRegressor`**     | não         |
+| Estocático     | Rápido     | Rápido         | $\geq 2$       | sim                   | **`SGBRegressor`**     | sim         |
+| Mini-Batch     | Rápido     | Rápido         | $\geq 2$       | sim                   | **`SGBRegressor`**     | sim         |
+
+```python
+from sklearn.linear_model import SGDRegressor
+# Batch
+batch = SGDRegressor(penalty=None,alpha=0.1,max_iter=1000,learning_rate='constant')
+
+# Estocástico
+stocastic = SGDRegressor(penalty=None,alpha=0.1,max_iter=1000,learning_rate='adaptive') 
+```
+
+## Regressão Polinomial
+
+<img title="" src="img/polinomio.png" alt="" width="410" data-align="center">
+
+Se os dados forem mais complexo de um linha reta , pode usar um modelo não linear para ajusta dados não lineares. Adicionando potencia de cada caracterista como novas caracteristicas e depois treinar um modelo linear nesse conjunto dilatado de caracteristicas. Essa tecnica se chama regressão polinomial.
+
+----------**1.input**
+
+```python
+from sklearn.preprocessing import PolynomialFeatures
+
+poly  = PolynomialFeatures(degree=2,include_bias=False)
+xpoly = poly.fit_transform(X)
+
+
+print(xpoly[0],X[0],X[0]**2)
+```
+
+---------**output**
+
+```bash
+[-0.58572307  0.34307152] [-0.58572307] [0.34307152]
+```
+
+----------**2.input**
+
+```python
+from sklearn.linear_model import LinearRegression
+
+linReg = LinearRegression()
+linReg.fit(xpoly,y)
+
+print(linReg.intercept_,linReg.coef_)
+```
+
+-----**output**
+
+```bash
+[-0.12324421] [[1.13392779 2.0372897 ]]
+```
+
+
+
+
+
+## Modelos Lineares Regularizados
+
+### Regressão Ridge
+
+$||w||_2 = \sqrt{w_1²+ w_2^2 +...+w_n^2}$
+
+### Regressão Lasso
