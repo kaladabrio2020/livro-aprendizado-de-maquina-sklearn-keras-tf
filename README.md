@@ -2,7 +2,7 @@
     <img src="/img/Capa.png" height=300px>
 </div>
 
-# Mãos à Obra: Aprendizado de Máquina com Sklearn,Keras & Tensorflow 2&#170 edição
+# Mãos à Obra: Aprendizado de Máquina com Sklearn,Keras & Tensorflow 2&#170; edição
 
 ## Objetivo
 
