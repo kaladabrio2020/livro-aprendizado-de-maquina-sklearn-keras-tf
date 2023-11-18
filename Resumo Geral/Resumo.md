@@ -213,8 +213,18 @@ A seguencia de compenentes de processamentos de dados se chama pipeline de dados
 Na analise dados , com histograma podemos vizualizar que certo atributos podem ter uma tail-heavy, as vezes se faz necessario passar para um distribuiçao normal
 
 * Logaritmica
+  
+  * ```python
+    import numpy as np
+    target = np.log10(target)
+    ```
 
 * Raiz Quadrada
+  
+  * ```python
+    import numpy as np
+    values = np.sqrt(values)
+    ```
 
 * Box-cox
   
