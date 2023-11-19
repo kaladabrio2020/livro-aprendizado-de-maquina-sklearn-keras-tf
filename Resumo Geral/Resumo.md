@@ -252,6 +252,81 @@ Em vez de preparar tudo manualmente , voce dever escrever funções
 
 # Capítulo 4 - Treinando Modelos
 
+## 
+
 ## Regressão Linear
 
 <img title="" src="img/plot.png" alt="" width="371" data-align="center">
+
+Um modelo linear faz a predição simples calculando uma soma ponderada das caracteristicas de entrada, alem de uma constante chamada viés (intercepto | coef linear)
+
+### Equação da predição do modelo de regressão linear
+
+$$
+\^{y} = \theta_0 + \theta_1x_1 + \theta_2x_2 + .... + \theta_nx_n
+$$
+
+* $\^{y}$ : é o valor previsto
+
+* $n$ : é número das caracteristica(coluna _n_)
+
+* $x_i$ : é o valor da i-ésima caracteristica(atributo)
+
+* $\theta_j$ : é o j-ésimo parametro do modelo
+  
+  * $\theta_0$ intercepto | coeficiente linear
+  
+  * $\theta{n \geq 1}$ coeficiente angular
+  
+  $$
+  \^{y} = h_\theta(x) 
+  $$
+
+> Vetores de coluna , são array 2d com uma única coluna
+
+```python
+series = carateristicas_n
+x = series.values.reshape(-1,1)
+```
+
+Treinar um modelo significa definir os parametros (intercepto & coeficente angular) para que o modelo se ajuste melhor ao conjunto de treinamento.
+
+> O algoritmo me da os parametros $\theta_0$ e $\theta_{n \ge 1 }$
+
+### Equação normal
+
+Para encontrar os parametros $\theta$ que minimiza a função de custo 
+
+$$
+\large \^{\theta} = (X^T X)^{-1} X^T y
+$$
+
+* $\large \^{\theta}$ é o valor de $\theta$ que minimiza a função de custo
+  
+  * Ele me da os valores do parametros (intercepto e coeficente angular)
+
+* $y$ é o valor alvo
+
+```python
+from typing       import Literal,_LiteralGenericAlias
+from sklearn.base import RegressorMixin
+
+class RegressaoLinear(RegressorMixin):
+    theta = None
+    def __init__(self,solver=Literal['normal','svd']):
+    
+        if (type(solver)==_LiteralGenericAlias):
+            self.solver = 'normal'
+        else:
+            self.solver = solver
+
+    def fit(self,X:np.array, y:np.array):
+        m = np.size(X)
+        X = np.c_[ np.ones((m,1)) , X]
+        if (self.solver == 'normal'):
+            self.theta = np.linalg.inv(X.T.dot(X)).dot(X.T).dot(y)             
+        return self.theta
+
+    def predict(self,X:np.array)->Literal['Valor y']:
+        return (self.theta[1] * X ) + self.theta[0] # y = theta_0 + theta_1x1.....
+```
