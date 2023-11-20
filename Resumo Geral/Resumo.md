@@ -272,11 +272,11 @@ $$
 
 * $x_i$ : é o valor da i-ésima caracteristica(atributo)
 
-* $\theta_j$ : é o j-ésimo parametro do modelo
+* $\theta_j$ : é o j-ésimo parametro do modelo 
   
-  * $\theta_0$ intercepto | coeficiente linear
+  * $\theta_0$ intercepto | coeficiente linear | viés
   
-  * $\theta{n \geq 1}$ coeficiente angular
+  * $\theta{n \geq 1}$ coeficiente angular | Peso das caracteristicas
   
   $$
   \^{y} = h_\theta(x) 
@@ -311,22 +311,76 @@ $$
 from typing       import Literal,_LiteralGenericAlias
 from sklearn.base import RegressorMixin
 
+
 class RegressaoLinear(RegressorMixin):
     theta = None
-    def __init__(self,solver=Literal['normal','svd']):
-    
+    def __init__(self,solver=Literal['simples','normal','svd']):
         if (type(solver)==_LiteralGenericAlias):
             self.solver = 'normal'
         else:
             self.solver = solver
 
     def fit(self,X:np.array, y:np.array):
-        m = np.size(X)
+        m = np.size(X)        
         X = np.c_[ np.ones((m,1)) , X]
-        if (self.solver == 'normal'):
-            self.theta = np.linalg.inv(X.T.dot(X)).dot(X.T).dot(y)             
-        return self.theta
 
+        match (self.solver):
+            case 'normal':
+                self.theta = np.linalg.inv(X.T.dot(X)).dot(X.T).dot(y)     
+        
+            case 'simples': 
+                xx = X[:,1]**2
+                xy = X[:,1]*y
+                angular    = ((m*np.sum(xy) - np.sum(X[:,1]) * np.sum(y) )) / (m*np.sum(xx) - (np.sum(X[:,1])**2))
+                intercepto =  np.mean(y) - angular*np.mean(X[:,1])
+            
+                self.theta = np.array([[intercepto],[angular]])
+        
+            case 'svd':
+                U, S, Vt   = np.linalg.svd(X,full_matrices=False)
+                self.theta = Vt.T @ np.linalg.inv(np.diag(S)) @ U.T @ y
+            
+        return self.theta
+        
+    
     def predict(self,X:np.array)->Literal['Valor y']:
         return (self.theta[1] * X ) + self.theta[0] # y = theta_0 + theta_1x1.....
 ```
+
+> treinar um modelo de regressão linera , precisar encontrar o valores dos parametros $\theta$ que minimiza o erro quadrático médio.
+
+#### Complexidade
+
+$\large X_{m \cdot n}$ : $n$[coluna] é igual ao número de carateristicas e $m$[linha] é o numero de instancias
+
+* Para a equação normal $X^T X$ calcula a inversa da matriz é normalmente $O(n^{2.4})$ a $O(n³)$ dependendo da implementação . Se dobrar do número de caractéristicas :
+  
+  * n=2 $O(n^{2.4})=5.3$ a $O(2^3) = 8$
+
+* O sklearn usa o **SVD** para definir os parametros **`LinearRegression`** a complexidade é $O(n³)$
+
+* Caso o seja $Xtrain_{100 \cdot 1}$  a  complexidade e $O(m)$ : em relação ao número de instancias no conjunto de treinamento.
+
+* Ruim para conjunto de dados com muitas caracteriticas & bom para conjunto com muitas instancias 
+
+### Gradiente Descendente
+
+* Objetivo minimizar a função de custo $Min :f(x)$ , isso feito de forma iterativa ajustando  os parametros
+
+* **Parametros Importantes**:
+  
+  * Tamanho das etapas chamada de taxa aprendizado 
+    
+    * Se a taxa de aprendizado for muito baixo meu algoritmo terá mais iterações até convergir para o minimo
+    
+    * Se a taxa de aprendizado for muito alta meu talvez meu algoritmo não a um solução boa, dando passos muitos altos
+
+* É importante deixar as as  caracteriasticas nua mesma escala pois o gradiente não funciona bem com escala diferente
+  
+  * **`StandardScaler`** : Padronização
+  
+  * **`MinMaxScaler`** : Normalização
+
+#### Gradiente descendente em batch
+
+* Irei usar todo o conjunto de treinamento para encontrar os parametros 
