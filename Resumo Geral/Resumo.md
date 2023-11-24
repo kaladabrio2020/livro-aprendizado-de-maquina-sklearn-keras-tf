@@ -327,22 +327,22 @@ class RegressaoLinear(RegressorMixin):
         match (self.solver):
             case 'normal':
                 self.theta = np.linalg.inv(X.T.dot(X)).dot(X.T).dot(y)     
-        
+
             case 'simples': 
                 xx = X[:,1]**2
                 xy = X[:,1]*y
                 angular    = ((m*np.sum(xy) - np.sum(X[:,1]) * np.sum(y) )) / (m*np.sum(xx) - (np.sum(X[:,1])**2))
                 intercepto =  np.mean(y) - angular*np.mean(X[:,1])
-            
+
                 self.theta = np.array([[intercepto],[angular]])
-        
+
             case 'svd':
                 U, S, Vt   = np.linalg.svd(X,full_matrices=False)
                 self.theta = Vt.T @ np.linalg.inv(np.diag(S)) @ U.T @ y
-            
+
         return self.theta
-        
-    
+
+
     def predict(self,X:np.array)->Literal['Valor y']:
         return (self.theta[1] * X ) + self.theta[0] # y = theta_0 + theta_1x1.....
 ```
@@ -384,3 +384,19 @@ $\large X_{m \cdot n}$ : $n$[coluna] é igual ao número de carateristicas e $m$
 #### Gradiente descendente em batch
 
 * Irei usar todo o conjunto de treinamento para encontrar os parametros 
+
+##### Vetor gradiente da função custo
+
+$$
+\nabla_{\theta} MSE(\theta) = \frac{2}{m}X^T (X\theta - y)
+$$
+
+* Usa todo dos dados de treinamento $X$ com isso e extremanente lento para conjuntos muito grande , contudo , ele é mais rapido que a Regressão Linear
+
+##### Etapa do gradiente descendente
+
+$$
+\theta_{i+1} = \theta_{i} -\eta \nabla_{\theta} MSE(\theta)
+$$
+
+```PY
