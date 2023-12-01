@@ -25,7 +25,7 @@ $$
 * **[Root Mean Squared Error]()**
   
   * $$
-     \sqrt{ \frac{1}{m} \cdot \sum^{m}_{i=0}(ytrue_i - pred_i)^2}
+    \sqrt{ \frac{1}{m} \cdot \sum^{m}_{i=0}(ytrue_i - pred_i)^2}
     $$
     
     * É  a média da diferença do valor real - valor previsto elevado ao quadrado da raiz 
@@ -61,10 +61,6 @@ $$
 $$
 
 Encontrando os valores de $\theta$ de forma fechada
-
-
-
-
 
 #### Complexidade computacional
 
@@ -125,27 +121,27 @@ class GradienteDescendente(RegressorMixin):
         if np.any(np.isneginf(vetor)): return True
         if np.any(np.isposinf(vetor)): return True
         return False
-    
+
     def fit(self,X:np.array,y:np.array):
         m  = np.size(X,axis=0)
         Xb = np.c_[ np.ones((m,1)) ,X]
-        
+
         cronogramaLearning = lambda t : self.t0  / (t+self.t1)
         match self.solver:
             case 'batch':
                 for iter in range(self.maxIter):
                     gradient = Xb.T.dot(Xb.dot(self.theta) - y)
                     gradient = (2/m) * gradient 
-                    
+
                     if self.condition(gradient) :break
 
                     self.theta = self.theta - self.eta * gradient 
-                    
+
                     if self.condition(self.theta):break
 
 
             case 'stocastic':
-                
+
 
                 for epocas in range(self.n_epochs):
                     for iter in range(m):
@@ -168,7 +164,7 @@ class GradienteDescendente(RegressorMixin):
                     for iter in range(m):
                         xi = Xb[miniLote,:]
                         yi = y[miniLote ,:]
-                        
+
                         gradient = 2 * xi.T.dot(xi.dot(self.theta) - yi)
 
                         if self.condition(gradient) :break
@@ -195,13 +191,12 @@ class GradienteDescendente(RegressorMixin):
             samples.append(sample)
             if len(samples[len(samples)-1]) == 0: del samples[len(samples)-1]
         return samples
-    
+
     def predict(self,X):
         soma = 0
         for i in range(np.size(X,axis=1)):
             soma += self.theta[i+1] * X[:,i] 
         return self.theta[0] + soma
-    
 ```
 
 ## Modelos Lineares Regularizados
@@ -217,3 +212,5 @@ class GradienteDescendente(RegressorMixin):
 * **Vantagem:**
   
   * Robustez e estabilidade: adição de novos dados não resultam em mundancas drasticas dos pesos
+
+--------------
