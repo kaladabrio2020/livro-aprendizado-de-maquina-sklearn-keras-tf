@@ -1,5 +1,0 @@
-{
-    "python.linting.pylintArgs": [
-        "--extension-pkg-whitelist = keras"
-    ]
-}
