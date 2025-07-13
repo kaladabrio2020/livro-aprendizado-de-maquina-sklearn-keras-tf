@@ -21,4 +21,10 @@ Mostra todo o progresso no livro
 6. [Capítulo 6 - Arvore de Decisão](/Parte%20I-Os%20Conceitos%20Básicos%20de%20ML/Capitulo%206-Árvore%20de%20Decisão/)
 7. [Capítulo 7 - Aprendizado Ensembre](/Parte%20I-Os%20Conceitos%20Básicos%20de%20ML/Capitulo%207-Aprendizado%20Ensemble%20e%20Floresta%20Aleatórias/)
 8. [Capítulo 8 - Redução de dimensionalidade](/Parte%20I-Os%20Conceitos%20Básicos%20de%20ML/Capitulo%207-Aprendizado%20Ensemble%20e%20Floresta%20Aleatórias/)
+9. [Capítulo 9 - Tecnicas de aprendizado não supervisioando](/Parte%20I-Os%20Conceitos%20Básicos%20de%20ML/Capitulo%209-Tecnicas%20de%20Aprendizado%20Nsupervisionado/)
+
+
+
+### [Parte 2 - Redes Neurais e Aprendizado Profundo](/Parte%20II-Redes%20Neurais%20e%20Aprendizado%20Profundo/)
+
 
