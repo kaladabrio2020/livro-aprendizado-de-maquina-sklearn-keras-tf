@@ -1,0 +1,119 @@
+# %%
+# Importando as bibliotecas necessárias
+import yfinance
+import keras
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from tensorflow.keras.preprocessing.sequence import TimeseriesGenerator
+from sklearn.preprocessing import MinMaxScaler
+
+# %%
+# 1. Baixando e preparando os dados
+data = yfinance.download("USDBRL=X", start="2020-01-01", end="2025-07-13", interval="1d")
+series = data['Close'].values.reshape(-1, 1) # Extrai a coluna 'Close' e ajusta o formato para o scaler
+
+# %%
+# 2. ESCALONAMENTO DOS DADOS (Passo crucial que faltava)
+# Normaliza os dados para o intervalo [0, 1] para ajudar o modelo a convergir
+scaler = MinMaxScaler()
+series_scaled = scaler.fit_transform(series)
+
+# %%
+# 3. DIVISÃO EM TREINO E TESTE (Essencial para avaliação)
+# Usaremos 80% dos dados para treino e os 20% restantes para teste
+split_index = int(len(series_scaled) * 0.8)
+train_data = series_scaled[:split_index]
+test_data = series_scaled[split_index:]
+
+# %%
+# 4. Preparando os geradores de dados para o modelo
+window_size = 50 # O tamanho da janela de tempo que o modelo usará para prever o próximo passo
+batch_size = 32
+
+# Gerador para os dados de treino
+train_generator = TimeseriesGenerator(train_data, train_data, length=window_size, batch_size=batch_size)
+# Gerador para os dados de teste
+test_generator = TimeseriesGenerator(test_data, test_data, length=window_size, batch_size=batch_size)
+
+# %%
+# 5. Construindo o modelo GRU
+# A arquitetura com duas camadas GRU é uma boa escolha
+model = keras.models.Sequential([
+    keras.layers.GRU(50, input_shape=(window_size, 1), return_sequences=True),
+    keras.layers.GRU(50), # A última camada GRU não precisa de return_sequences=True
+    keras.layers.Dense(1) # Camada de saída para prever um único valor
+])
+model.summary()
+
+# %%
+# 6. Compilando o modelo
+# Definindo a taxa de aprendizado (lr) que estava faltando
+learning_rate = 0.001
+model.compile(
+    loss=keras.losses.mean_squared_error,
+    optimizer=keras.optimizers.Adam(learning_rate=learning_rate),
+    metrics=[keras.metrics.mean_absolute_error]
+)
+
+# %%
+# 7. Treinando o modelo
+# Usamos os dados de teste para validação para monitorar o desempenho em dados não vistos
+history = model.fit(
+    train_generator,
+    validation_data=test_generator,
+    epochs=50, # Aumentei um pouco as épocas, já que temos o EarlyStopping
+    callbacks=[keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)],
+)
+
+# %%
+# 8. Avaliando o modelo nos dados de teste
+# Fazendo predições nos dados de teste
+test_predictions_scaled = model.predict(test_generator)
+
+# %%
+# 9. Gerando previsões para o futuro (além dos dados conhecidos)
+future_predictions_scaled = []
+current_batch = series_scaled[-window_size:] # Pega a última janela de dados reais
+current_batch = current_batch.reshape((1, window_size, 1)) # Ajusta o formato
+
+# Loop para prever os próximos 100 dias
+for i in range(100):
+    # Faz a predição
+    next_prediction = model.predict(current_batch, verbose=0)
+    # Adiciona a predição à lista
+    future_predictions_scaled.append(next_prediction[0])
+    # Atualiza o batch: remove o valor mais antigo e adiciona a nova predição
+    current_batch = np.append(current_batch[:, 1:, :], [next_prediction], axis=1)
+
+# %%
+# 10. Invertendo a escala para visualizar os resultados na cotação original
+# Isso é fundamental para interpretar os resultados
+test_predictions = scaler.inverse_transform(test_predictions_scaled)
+future_predictions = scaler.inverse_transform(future_predictions_scaled)
+
+# Prepara os dados originais de teste para plotagem
+original_test_data = series[split_index + window_size:]
+
+# %%
+# 11. Plotando os resultados
+plt.figure(figsize=(15, 7))
+plt.title("Previsão da Cotação do Dólar (USDBRL=X)")
+plt.ylabel("Cotação (R$)")
+plt.grid(True)
+
+# Plota os dados de treino
+plt.plot(data.index[:split_index], scaler.inverse_transform(train_data), 'blue', label='Dados de Treino')
+
+# Plota os dados de teste originais
+plt.plot(data.index[split_index + window_size:], original_test_data, 'green', label='Dados Reais (Teste)')
+
+# Plota as predições do modelo sobre os dados de teste
+plt.plot(data.index[split_index + window_size:], test_predictions, 'orange', label='Predições do Modelo (Teste)')
+
+# Cria um índice de datas para as previsões futuras
+future_dates = pd.date_range(start=data.index[-1] + pd.Timedelta(days=1), periods=100)
+plt.plot(future_dates, future_predictions, 'red', linestyle='--', label='Previsões Futuras (100 dias)')
+
+plt.legend()
+plt.show()
