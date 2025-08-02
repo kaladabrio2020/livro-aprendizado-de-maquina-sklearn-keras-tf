@@ -26,5 +26,9 @@ Mostra todo o progresso no livro
 
 
 ### [Parte 2 - Redes Neurais e Aprendizado Profundo](/Parte%20II-Redes%20Neurais%20e%20Aprendizado%20Profundo/)
-
-
+1. [Capítulo 10 - Introdução as Redes Neurais](/Parte%20II-Redes%20Neurais%20e%20Aprendizado%20Profundo/Capítulo%2010%20-%20Introdução%20ás%20Redes%20Neurais%20Artificiais%20com%20a%20Bibliotecas%20Keras/)
+2. [Capítulo 11 - Treinando redes neurais](/Parte%20II-Redes%20Neurais%20e%20Aprendizado%20Profundo/Capítulo%2011%20-%20Treinando%20Redes%20Neurais%20Profundas/)
+3. [Capítulo 12 - Modelos Customizados](/Parte%20II-Redes%20Neurais%20e%20Aprendizado%20Profundo/Capítulo%2012%20-%20Modelo%20Customizados/)
+4. [Capítulo 13 - Carregando e pre-processando dados](/Parte%20II-Redes%20Neurais%20e%20Aprendizado%20Profundo/Capítulo%2013%20-%20Carreganto%20e%20pré-prcessando%20dados/)
+5. [Capítulo 14 - Visão Computacional](/Parte%20II-Redes%20Neurais%20e%20Aprendizado%20Profundo/Capítulo%2014%20-%20Visao%20computacional/)
+6. [Capítulo 15 - Series Tempoarais](/Parte%20II-Redes%20Neurais%20e%20Aprendizado%20Profundo/Capítulo%2015%20-%20Series%20Temporais/)
