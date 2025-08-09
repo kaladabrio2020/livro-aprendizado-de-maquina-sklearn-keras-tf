@@ -1,3 +1,5 @@
 venv
 /esi-trabalho-final/.
 esi-trabalho-final/*
+
+*.json
